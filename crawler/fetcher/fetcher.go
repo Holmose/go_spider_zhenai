@@ -12,6 +12,7 @@ import (
 	"net/http"
 	"strconv"
 	"strings"
+	"time"
 )
 
 // Unicode解码
@@ -33,16 +34,32 @@ func determineEncoding(r io.Reader) encoding.Encoding {
 	return e
 }
 
+const (
+	userAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/104.0.5112.81 Safari/537.36 Edg/104.0.1293.47"
+)
+
 func Fetch(url string) ([]byte, error) {
-	resp, err := http.Get("http://www.zhenai.com/zhenghun")
+	client := &http.Client{
+		Timeout: 2 * time.Second,
+	}
+	// 添加 Useragent
+	req, _ := http.NewRequest("GET", url, nil)
+	req.Header.Set("User-Agent", userAgent)
+	resp, err := client.Do(req)
+	//resp, err := http.Get(url)
 	if err != nil {
 		return nil, err
 	}
 	defer resp.Body.Close()
 
+	if resp.StatusCode == http.StatusAccepted {
+		return nil, fmt.Errorf("获取数据失败，存在反爬！%d", resp.StatusCode)
+	}
+
 	if resp.StatusCode != http.StatusOK {
 		return nil, fmt.Errorf("wrong status code: %d", resp.StatusCode)
 	}
+
 	// 推测编码
 	e := determineEncoding(resp.Body)
 	utf8Reader := transform.NewReader(resp.Body, e.NewDecoder())
