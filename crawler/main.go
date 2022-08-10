@@ -6,9 +6,14 @@ import (
 )
 
 func main() {
-	engine.Run(engine.Request{
+	engine.SimpleEngine{}.Run(engine.Request{
 		Url:        "http://www.zhenai.com/zhenghun",
 		ParserFunc: parser.ParseCityList,
 	})
+
+	//engine.SimpleEngine{}.Run(engine.Request{
+	//	Url:        "http://www.zhenai.com/zhenghun/aba",
+	//	ParserFunc: parser.ParseCity,
+	//})
 
 }
