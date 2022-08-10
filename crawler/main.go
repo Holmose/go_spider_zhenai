@@ -6,14 +6,14 @@ import (
 )
 
 func main() {
-	engine.SimpleEngine{}.Run(engine.Request{
-		Url:        "http://www.zhenai.com/zhenghun",
-		ParserFunc: parser.ParseCityList,
-	})
-
 	//engine.SimpleEngine{}.Run(engine.Request{
-	//	Url:        "http://www.zhenai.com/zhenghun/aba",
-	//	ParserFunc: parser.ParseCity,
+	//	Url:        "http://www.zhenai.com/zhenghun",
+	//	ParserFunc: parser.ParseCityList,
 	//})
+
+	engine.SimpleEngine{}.Run(engine.Request{
+		Url:        "http://www.zhenai.com/zhenghun/anhui",
+		ParserFunc: parser.ParseCity,
+	})
 
 }
