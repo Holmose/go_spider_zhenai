@@ -2,13 +2,16 @@ package scheduler
 
 import (
 	"PRO02/crawler/engine"
-	"log"
 )
 
 type QueuedScheduler struct {
 	requestChan chan engine.Request
-	// 每个work都有自己的channel
+	// 每个work都有自己的channel，全部放到一个总的channel中
 	workerChan chan chan engine.Request
+}
+
+func (s *QueuedScheduler) WorkerChan() chan engine.Request {
+	return make(chan engine.Request)
 }
 
 func (s *QueuedScheduler) Submit(r engine.Request) {
@@ -20,9 +23,6 @@ func (s *QueuedScheduler) WorkerReady(w chan engine.Request) {
 	s.workerChan <- w
 }
 
-func (s *QueuedScheduler) ConfigureMasterWorkerChan(c chan engine.Request) {
-	log.Panic("Implement interface", c)
-}
 func (s *QueuedScheduler) Run() {
 	s.workerChan = make(chan chan engine.Request)
 	s.requestChan = make(chan engine.Request)
