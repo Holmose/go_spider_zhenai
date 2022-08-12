@@ -2,7 +2,10 @@ package parser
 
 import (
 	"PRO02/crawler/engine"
+	"PRO02/crawler/model"
 	"regexp"
+	"strconv"
+	"strings"
 )
 
 var (
@@ -26,25 +29,36 @@ func ParseCity(contents []byte) engine.ParseResult {
 		name := string(m[2])
 		gender := string(m[3])
 		place := string(m[4])
-		age := string(m[5])
+		age, err := strconv.Atoi(string(m[5]))
+		if err != nil {
+			age = -1
+		}
 		salaryoredu := string(m[6])
 		marry := string(m[7])
-		height := string(m[8])
+		height, err := strconv.Atoi(string(m[8]))
+		if err != nil {
+			height = -1
+		}
 		introduce := string(m[9])
 
-		items := map[string]string{
-			"User":        name,
-			"gender":      gender,
-			"place":       place,
-			"age":         age,
-			"salaryoredu": salaryoredu,
-			"marry":       marry,
-			"height":      height,
-			"introduce":   introduce,
+		item := model.Profile{
+			Name:      name,
+			Gender:    gender,
+			Age:       age,
+			Height:    height,
+			Marriage:  marry,
+			Place:     place,
+			Introduce: introduce,
+		}
+
+		if strings.Contains(salaryoredu, "元") {
+			item.Income = salaryoredu
+		} else {
+			item.Education = salaryoredu
 		}
 
 		result.Items = append(
-			result.Items, items)
+			result.Items, item)
 
 		//result.Requests = append(
 		//	result.Requests, engine.Requests{

@@ -39,7 +39,7 @@ func (e *ConcurrentEngine) Run(seeds ...Request) {
 		// 获取输出通道的内容
 		result := <-out
 		for _, item := range result.Items {
-			log.Printf("Got item #%d: %v", itemCount, item)
+			log.Printf("Got item #%d: %#v", itemCount, item)
 			itemCount++
 		}
 
