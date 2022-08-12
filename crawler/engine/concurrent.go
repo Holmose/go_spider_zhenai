@@ -12,18 +12,18 @@ type ConcurrentEngine struct {
 type Scheduler interface {
 	Submit(Request)
 	ConfigureMasterWorkerChan(chan Request)
+	WorkerReady(chan Request)
+	Run()
 }
 
 // Run 指针类型的接收者，用于改变 Scheduler
 func (e *ConcurrentEngine) Run(seeds ...Request) {
-	// 定义输入、输出通道
-	in := make(chan Request)
 	out := make(chan ParseResult)
 	// 将通道传入Scheduler
-	e.Scheduler.ConfigureMasterWorkerChan(in)
+	e.Scheduler.Run()
 
 	for i := 0; i < e.WorkerCount; i++ {
-		createWorker(in, out)
+		createWorker(out, e.Scheduler)
 	}
 
 	for _, r := range seeds {
@@ -46,9 +46,13 @@ func (e *ConcurrentEngine) Run(seeds ...Request) {
 
 }
 
-func createWorker(in chan Request, out chan ParseResult) {
+func createWorker(out chan ParseResult, s Scheduler) {
+	// 每个Worker自己的channel
+	in := make(chan Request)
 	go func() {
 		for {
+			// tell scheduler i'm ready
+			s.WorkerReady(in)
 			request := <-in
 			result, err := worker(request)
 			if err != nil {
