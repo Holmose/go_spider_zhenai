@@ -5,8 +5,8 @@ type Request struct {
 	ParserFunc func([]byte) ParseResult
 }
 type ParseResult struct {
-	Request []Request
-	Items   []interface{}
+	Requests []Request
+	Items    []interface{}
 }
 
 func NilParser([]byte) ParseResult {

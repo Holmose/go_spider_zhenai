@@ -44,7 +44,7 @@ func (e *ConcurrentEngine) Run(seeds ...Request) {
 		}
 
 		// 将request 送入Scheduler
-		for _, request := range result.Request {
+		for _, request := range result.Requests {
 			e.Scheduler.Submit(request)
 		}
 	}
