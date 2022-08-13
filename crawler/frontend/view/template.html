@@ -1,113 +1,51 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="utf-8">
-    <title>搜索</title>
-    <style>
-        form .text {
-            display: inline-block;
-            border: 0;
-            width: 260px;
-            height: 35px;
-            font-size: 14px;
-            outline: none;
-
-            border: 2px solid #01af63;
-        }
-
-        form .search {
-
-            width: 90px;
-            height: 38px;
-            border: 0;
-            outline: none;
-            cursor: pointer;
-            /*   cursor: pointer;   鼠标悬停或点击时button时鼠标变成其他图标  */
-            text-align: center;
-            line-height: 40px;
-            background-color: #01af63;
-            color: #FFFFFF;
-        }
-
-        .table11_6 table {
-            width: 100%;
-            margin: 15px 0;
-            border: 0;
-        }
-
-        .table11_6 th {
-            background-color: #96C7ED;
-            color: #000000
-        }
-
-        .table11_6, .table11_6 th, .table11_6 td {
-            font-size: 0.95em;
-            text-align: center;
-            padding: 4px;
-            border-collapse: collapse;
-        }
-
-        .table11_6 th, .table11_6 td {
-            border: 1px solid #73b4e7;
-            border-width: 1px 0 1px 0;
-            border: 2px inset #ffffff;
-        }
-
-        .table11_6 tr {
-            border: 1px solid #ffffff;
-        }
-
-        .table11_6 tr:nth-child(odd) {
-            background-color: #dcecf9;
-        }
-
-        .table11_6 tr:nth-child(even) {
-            background-color: #ffffff;
-        }
-        .box {
-            width: 100%;
-            height: 100%;
-            /*此元素会作为一个表格单元格显示
-            （类似 <td> 和 <th>）*/
-            display: table-cell;
-            /*垂直居中 */
-            vertical-align: middle;
-            /*水平居中*/
-            text-align: center;
-        }
-    </style>
+    <meta charset="UTF-8">
+    <title>相亲数据搜索</title>
+    <link rel="stylesheet" href="style.css" type="text/css">
 </head>
 <body>
-
-<div class="box">
-<form target="_blank" method="get" action="https://www.baidu.com/s">
-    <input type="text" placeholder="请输入关键词" name="word" class="text"/>
-    <input type="submit" value="搜索" class="search">
-</form>
-
-<h2>共为你找到相关结果约{{.Hits}}个。显示从{{.Start}}起共{{len .Items}}个。</h2>
-<table class="table11_6">
-    {{range .Items}}
-    <tr>
-        <td><a href="{{.Url}}">{{.Payload.Name}}</a></td>
-        {{with .Payload}}
-        <td>{{.Gender}}</td>
-        <td>{{.Age}}</td>
-        <td>{{.Height}}</td>
-        <td>{{.Income}}</td>
-        <td>{{.Marriage}}</td>
-        <td>{{.Education}}</td>
-        <td>{{.Occupation}}</td>
-        <td>{{.Place}}</td>
-        <td>{{.Introduce}}</td>
-        <td>{{.House}}</td>
-        <td>{{.Car}}</td>
-        {{end}}
-    </tr>
-    {{else}}
-    <div>没有找到相关用户</div>
-    {{end}}
-</table>
+<div id="total1">
+    <div class="main">
+        <div style="text-align: center">
+            <form method="get" action="search">
+                <input class="inp" type="text" placeholder="请输入关键词" name="q" class="text" value="{{.Query}}"/>
+                <input id="qstnMark" type="submit" value="搜索" class="search">
+            </form>
+        </div>
+        <div class="table">
+            <table id="table1" cellspacing="0px">
+                {{range .Items}}
+                <tr class="tableTitle" align="center">
+                    <td class="col1"><a href="{{.Url}}">{{.Payload.Name}}</a></td>
+                    {{with .Payload}}
+                    <td>{{.Gender}}</td>
+                    <td>{{.Age}}</td>
+                    <td>{{.Height}}</td>
+                    <td>{{.Income}}</td>
+                    <td>{{.Marriage}}</td>
+                    <td>{{.Education}}</td>
+                    <td>{{.Place}}</td>
+                    <td>{{.Introduce}}</td>
+                    {{end}}
+                </tr>
+                {{else}}
+                <div>没有找到相关用户</div>
+                {{end}}
+            </table>
+        </div>
+        <div id="lowerLbl" align="center">
+            <p>共</p>
+            <p id="rowsNum">{{.Hits}}</p>
+            <p>条</p>
+            {{if ge .PrevFrom 0}}
+            <a class="btn" href="search?q={{.Query}}&from={{.PrevFrom}}">上一页</a>
+            {{end}}
+            <button id="pno" style="background-color: #5899ce; color: white">{{add .Start (len .Items)}}</button>
+            <a class="btn" href="search?q={{.Query}}&from={{.NextFrom}}">下一页</a>
+        </div>
+    </div>
 </div>
 </body>
 </html>

@@ -6,13 +6,12 @@ import (
 	common "PRO02/crawler/model"
 	"os"
 	"testing"
-	"text/template"
 )
 
-func TestTemplate(t *testing.T) {
-	template := template.Must(
-		template.ParseFiles("template.html"),
-	)
+func TestSearchResultView_Render(t *testing.T) {
+	view := CreateSarchResultView("template.html")
+	out, err := os.Create("template_test.html")
+
 	page := model.SearchResult{}
 	page.Hits = 123
 	item := engine.Item{
@@ -36,8 +35,8 @@ func TestTemplate(t *testing.T) {
 	for i := 0; i < 10; i++ {
 		page.Items = append(page.Items, item)
 	}
-	out, err := os.Create("template_test.html")
-	err = template.Execute(out, page)
+
+	err = view.Render(out, page)
 	if err != nil {
 		t.Error(err)
 	}
