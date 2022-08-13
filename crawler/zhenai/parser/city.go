@@ -21,12 +21,23 @@ var (
 	cityUrlRe = regexp.MustCompile(`<a.+?href="(http://www.zhenai.com/zhenghun/[^"]+?)">[^<]+</a>`)
 )
 
+// TempMap 去重 空间换时间
+var TempMap = map[string]int8{}
+
 func ParseCity(contents []byte) engine.ParseResult {
 	matches := profileRe.FindAllSubmatch(contents, -1)
 
 	result := engine.ParseResult{}
 	for _, m := range matches {
 		name := string(m[2])
+
+		// 判断是否重复
+		if TempMap[name] == 1 {
+			// 重复
+			continue
+		}
+		TempMap[name] = 1
+
 		gender := string(m[3])
 		place := string(m[4])
 		age, err := strconv.Atoi(string(m[5]))

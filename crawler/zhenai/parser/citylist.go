@@ -2,6 +2,7 @@ package parser
 
 import (
 	"PRO02/crawler/engine"
+	"log"
 	"regexp"
 )
 
@@ -13,7 +14,8 @@ func ParseCityList(contents []byte) engine.ParseResult {
 
 	result := engine.ParseResult{}
 	for _, match := range matches {
-		result.Items = append(result.Items, string(match[2]))
+		// 去除无用信息
+		log.Printf("Got city: %q\n", string(match[2]))
 		result.Requests = append(result.Requests, engine.Request{
 			Url:        string(match[1]),
 			ParserFunc: ParseCity,
