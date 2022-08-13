@@ -10,7 +10,7 @@ import (
 func main() {
 	e := engine.ConcurrentEngine{
 		Scheduler:   &scheduler.QueuedScheduler{},
-		WorkerCount: 5,
+		WorkerCount: 10,
 		ItemChan:    persist.ItemSaver(),
 	}
 	e.Run(engine.Request{

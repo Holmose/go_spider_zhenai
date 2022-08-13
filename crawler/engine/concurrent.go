@@ -1,5 +1,9 @@
 package engine
 
+import (
+	"PRO02/crawler/model"
+)
+
 type ConcurrentEngine struct {
 	Scheduler   Scheduler
 	WorkerCount int
@@ -38,6 +42,9 @@ func (e *ConcurrentEngine) Run(seeds ...Request) {
 		for _, item := range result.Items {
 			//log.Printf("Got item #%d: %#v", itemCount, item)
 			//itemCount++
+			if isDuplicate(item.(model.Profile).Url) {
+				continue
+			}
 			func() { e.ItemChan <- item }()
 		}
 
@@ -62,4 +69,15 @@ func createWorker(in chan Request, out chan ParseResult, ready ReadyNotifier) {
 			out <- result
 		}
 	}()
+}
+
+var visitedUrls = make(map[string]bool)
+
+// 去重 空间换取时间
+func isDuplicate(url string) bool {
+	if visitedUrls[url] {
+		return true
+	}
+	visitedUrls[url] = true
+	return false
 }
