@@ -5,13 +5,18 @@ import (
 	"PRO02/crawler/persist"
 	"PRO02/crawler/scheduler"
 	"PRO02/crawler/zhenai/parser"
+	"log"
 )
 
 func main() {
+	itemChan, err := persist.ItemSaver()
+	if err != nil {
+		log.Panic(err)
+	}
 	e := engine.ConcurrentEngine{
 		Scheduler:   &scheduler.QueuedScheduler{},
 		WorkerCount: 10,
-		ItemChan:    persist.ItemSaver(),
+		ItemChan:    itemChan,
 	}
 	e.Run(engine.Request{
 		Url:        "http://www.zhenai.com/zhenghun",

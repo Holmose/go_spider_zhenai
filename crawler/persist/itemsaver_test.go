@@ -1,6 +1,7 @@
 package persist
 
 import (
+	"PRO02/crawler/engine"
 	"PRO02/crawler/model"
 	"context"
 	"encoding/json"
@@ -9,22 +10,26 @@ import (
 )
 
 func TestSave(t *testing.T) {
+	expected := engine.Item{
+		Url:  "https://album.zhenai.com/u/1141336149",
+		Type: "zhenai",
+		Id:   "1141336149",
+		Payload: model.Profile{
+			Name:       "Dingsir_",
+			Gender:     "男士",
+			Age:        31,
+			Height:     174,
+			Income:     "8001-12000元",
+			Marriage:   "未婚",
+			Education:  "",
+			Occupation: "",
+			Place:      "新疆阿克苏",
+			Introduce:  "我是一个比较简单的人，没太多的心眼和套路，我希望我的另一半也是个简单点的人。",
+			House:      "",
+			Car:        ""},
+	}
 
-	expected := model.Profile{
-		Name:       "Dingsir_",
-		Gender:     "男士",
-		Age:        31,
-		Height:     174,
-		Income:     "8001-12000元",
-		Marriage:   "未婚",
-		Education:  "",
-		Occupation: "",
-		Place:      "新疆阿克苏",
-		Introduce:  "我是一个比较简单的人，没太多的心眼和套路，我希望我的另一半也是个简单点的人。",
-		House:      "",
-		Car:        ""}
-
-	id, err := save(expected)
+	err := save(expected)
 	if err != nil {
 		t.Error(err)
 	}
@@ -37,22 +42,26 @@ func TestSave(t *testing.T) {
 	if err != nil {
 		t.Error(err)
 	}
+	// Save expected item
 	resp, err := client.Get().
 		Index("dating_profile").
-		Type("zhenai").
-		Id(id).
+		Type(expected.Type).
+		Id(expected.Id).
 		Do(context.Background())
 	if err != nil {
 		t.Error(err)
 	}
 
+	// Fetch save item
 	t.Logf("%s", resp.Source)
 
-	var actual model.Profile
-	err = json.Unmarshal([]byte(*resp.Source), &actual)
-	if err != nil {
-		t.Error(err)
-	}
+	var actual engine.Item
+	json.Unmarshal([]byte(*resp.Source), &actual)
+
+	actualProfile, err := model.FromJsonObj(actual.Payload)
+	actual.Payload = actualProfile
+
+	// Verify result
 	if actual != expected {
 		t.Errorf("got %v; expected %v", actual, expected)
 	}

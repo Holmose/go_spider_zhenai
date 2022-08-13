@@ -1,13 +1,9 @@
 package engine
 
-import (
-	"PRO02/crawler/model"
-)
-
 type ConcurrentEngine struct {
 	Scheduler   Scheduler
 	WorkerCount int
-	ItemChan    chan interface{}
+	ItemChan    chan Item
 }
 
 type Scheduler interface {
@@ -42,7 +38,7 @@ func (e *ConcurrentEngine) Run(seeds ...Request) {
 		for _, item := range result.Items {
 			//log.Printf("Got item #%d: %#v", itemCount, item)
 			//itemCount++
-			if isDuplicate(item.(model.Profile).Url) {
+			if isDuplicate(item.Url) {
 				continue
 			}
 			func() { e.ItemChan <- item }()

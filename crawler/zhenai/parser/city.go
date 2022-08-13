@@ -9,7 +9,7 @@ import (
 )
 
 var (
-	profileRe = regexp.MustCompile("<a href=.(http://album.zhenai.com/u/[\\d]+).[^>]+>([^<]+)</a>" +
+	profileRe = regexp.MustCompile("<a href=.(http.?://album.zhenai.com/u/[\\d]+).[^>]+>([^<]+)</a>" +
 		"[^\u6027\u522b]+>性别：</span>([^<]+)</td>" +
 		"[^\u5c45\u4f4f\u5730]+>居住地：</span>([\u4e00-\u9fa5]+)</td>" +
 		"[^\u5e74\u9f84]+>年龄：</span>([\\d]+)</td>" +
@@ -19,6 +19,7 @@ var (
 		"[^=]*?class=.introduce.>([^<]+)</div>")
 
 	cityUrlRe = regexp.MustCompile(`<a.+?href="(http://www.zhenai.com/zhenghun/[^"]+?)">[^<]+</a>`)
+	idUrlRe   = regexp.MustCompile("http.?://album.zhenai.com/u/([\\d]+)")
 )
 
 func ParseCity(contents []byte) engine.ParseResult {
@@ -27,6 +28,8 @@ func ParseCity(contents []byte) engine.ParseResult {
 	result := engine.ParseResult{}
 	for _, m := range matches {
 		url := string(m[1])
+		id := idUrlRe.FindAllStringSubmatch(url, -1)[0][1]
+
 		name := string(m[2])
 		gender := string(m[3])
 		place := string(m[4])
@@ -42,8 +45,7 @@ func ParseCity(contents []byte) engine.ParseResult {
 		}
 		introduce := string(m[9])
 
-		item := model.Profile{
-			Url:       url,
+		payload := model.Profile{
 			Name:      name,
 			Gender:    gender,
 			Age:       age,
@@ -54,9 +56,16 @@ func ParseCity(contents []byte) engine.ParseResult {
 		}
 
 		if strings.Contains(salaryoredu, "元") {
-			item.Income = salaryoredu
+			payload.Income = salaryoredu
 		} else {
-			item.Education = salaryoredu
+			payload.Education = salaryoredu
+		}
+
+		item := engine.Item{
+			Url:     url,
+			Type:    "zhenai",
+			Id:      id,
+			Payload: &payload,
 		}
 
 		result.Items = append(
