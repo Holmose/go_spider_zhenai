@@ -22,7 +22,7 @@ var (
 	idUrlRe   = regexp.MustCompile("http.?://album.zhenai.com/u/([\\d]+)")
 )
 
-func ParseCity(contents []byte) engine.ParseResult {
+func ParseCity(contents []byte, url string) engine.ParseResult {
 	matches := profileRe.FindAllSubmatch(contents, -1)
 
 	result := engine.ParseResult{}

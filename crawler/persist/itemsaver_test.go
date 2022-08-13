@@ -29,10 +29,6 @@ func TestSave(t *testing.T) {
 			Car:        ""},
 	}
 
-	err := save(expected)
-	if err != nil {
-		t.Error(err)
-	}
 	// 让测试不依赖于外界，代码启动一个docker go client
 	// TODO: Try to start up elastic search
 	// here using docker go client.
@@ -42,9 +38,16 @@ func TestSave(t *testing.T) {
 	if err != nil {
 		t.Error(err)
 	}
+
+	const index = "dating_test"
+	err = save(client, index, expected)
+	if err != nil {
+		t.Error(err)
+	}
+
 	// Save expected item
 	resp, err := client.Get().
-		Index("dating_profile").
+		Index(index).
 		Type(expected.Type).
 		Id(expected.Id).
 		Do(context.Background())

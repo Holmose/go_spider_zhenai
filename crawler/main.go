@@ -9,7 +9,8 @@ import (
 )
 
 func main() {
-	itemChan, err := persist.ItemSaver()
+	itemChan, err := persist.ItemSaver(
+		"dating_profile")
 	if err != nil {
 		log.Panic(err)
 	}
