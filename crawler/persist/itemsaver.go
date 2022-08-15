@@ -25,7 +25,7 @@ func ItemSaver(index string) (chan engine.Item, error) {
 			log.Printf("Item Saver: got item "+
 				"#%d: %#v: %#v", itemCount, item, item.Payload)
 			itemCount++
-			err := save(client, index, item)
+			err := Save(client, index, item)
 			if err != nil {
 				log.Printf("Item Saver: error "+
 					"saving item %v: %v", item, err)
@@ -36,7 +36,7 @@ func ItemSaver(index string) (chan engine.Item, error) {
 }
 
 // 使用客户端存储数据 https://github.com/olivere/elastic
-func save(client *elastic.Client,
+func Save(client *elastic.Client,
 	index string, item engine.Item) (err error) {
 
 	if item.Type == "" {
