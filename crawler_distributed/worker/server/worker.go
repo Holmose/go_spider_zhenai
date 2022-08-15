@@ -9,6 +9,7 @@ import (
 )
 
 func main() {
+	log.Print("Starting Worker Server ... ")
 	log.Fatal(rpcsupport.ServeRpc(
 		fmt.Sprintf(":%d", config.WorkerPort0),
 		worker.CrawlService{}))

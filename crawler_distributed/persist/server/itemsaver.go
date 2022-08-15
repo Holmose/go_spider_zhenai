@@ -10,6 +10,7 @@ import (
 )
 
 func main() {
+	log.Print("Starting ItemSaver Server ... ")
 	log.Fatal(serveRpc(
 		fmt.Sprintf(":%d", config.ItemSaverPort),
 		config.ElasticIndex))

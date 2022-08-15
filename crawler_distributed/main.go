@@ -5,25 +5,33 @@ import (
 	"PRO02/crawler/scheduler"
 	"PRO02/crawler/zhenai/parser"
 	"PRO02/crawler_distributed/config"
-	"PRO02/crawler_distributed/persist/client"
+	itemsaver "PRO02/crawler_distributed/persist/client"
+	worker "PRO02/crawler_distributed/worker/client"
 	"fmt"
 	"log"
 )
 
 func main() {
-	itemChan, err := client.ItemSaver(
+	itemChan, err := itemsaver.ItemSaver(
 		fmt.Sprintf(":%d", config.ItemSaverPort))
 	if err != nil {
 		log.Panic(err)
 	}
+	processor, err := worker.CreateProcessor()
+	if err != nil {
+		log.Panic(err)
+	}
 	e := engine.ConcurrentEngine{
-		Scheduler:   &scheduler.QueuedScheduler{},
-		WorkerCount: 100,
-		ItemChan:    itemChan,
+		Scheduler:        &scheduler.QueuedScheduler{},
+		WorkerCount:      5,
+		ItemChan:         itemChan,
+		RequestProcessor: processor,
 	}
 	e.Run(engine.Request{
-		Url:        "http://www.zhenai.com/zhenghun",
-		ParserFunc: parser.ParseCityList,
+		Url: "http://www.zhenai.com/zhenghun",
+		Parser: engine.NewFuncParser(
+			parser.ParseCityList,
+			"ParseCityList"),
 	})
 
 }
