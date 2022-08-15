@@ -10,7 +10,7 @@ import (
 func TestParseCityList(t *testing.T) {
 	//contents, _ := fetcher.Fetch("http://www.zhenai.com/zhenghun")
 	//fmt.Println(string(contents))
-	contents, err := os.ReadFile("citylist_test_data.html")
+	contents, err := os.ReadFile("citylist_test_data.html_data")
 	if err != nil {
 		log.Panic(err)
 	}
