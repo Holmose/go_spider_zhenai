@@ -6,7 +6,7 @@ import (
 )
 
 // Worker ：Fetcher和 Parser合并
-func worker(r Request) (ParseResult, error) {
+func Worker(r Request) (ParseResult, error) {
 	log.Printf("Fetching %s", r.Url)
 	body, err := fetcher.Fetch(r.Url)
 	if err != nil {
