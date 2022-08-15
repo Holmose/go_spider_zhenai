@@ -71,10 +71,11 @@ func ParseCity(contents []byte, url string) engine.ParseResult {
 		result.Items = append(
 			result.Items, item)
 
+		// TODO 爬取详细个人 存在反爬策略
 		//result.Requests = append(
-		//	result.Requests, engine.Requests{
+		//	result.Requests, engine.Request{
 		//		Url:        string(m[1]),
-		//		ParserFunc: ParseProfile,
+		//		Parser: NewProfileParser(string(m[2])),
 		//	})
 	}
 
@@ -82,8 +83,9 @@ func ParseCity(contents []byte, url string) engine.ParseResult {
 	for _, m := range matches {
 		result.Requests = append(result.Requests,
 			engine.Request{
-				Url:        string(m[1]),
-				ParserFunc: ParseCity,
+				Url: string(m[1]),
+				Parser: engine.NewFuncParser(
+					ParseCity, "ParseCity"),
 			})
 	}
 

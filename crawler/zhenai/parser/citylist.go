@@ -17,8 +17,9 @@ func ParseCityList(contents []byte, url string) engine.ParseResult {
 		// 去除无用信息
 		log.Printf("Got city: %q\n", string(match[2]))
 		result.Requests = append(result.Requests, engine.Request{
-			Url:        string(match[1]),
-			ParserFunc: ParseCity,
+			Url: string(match[1]),
+			Parser: engine.NewFuncParser(
+				ParseCity, "ParseCity"),
 		})
 	}
 	return result
