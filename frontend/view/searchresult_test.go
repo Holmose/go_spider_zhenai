@@ -2,14 +2,14 @@ package view
 
 import (
 	"PRO02/crawler/engine"
-	"PRO02/crawler/frontend/model"
 	common "PRO02/crawler/model"
+	"PRO02/frontend/model"
 	"os"
 	"testing"
 )
 
 func TestSearchResultView_Render(t *testing.T) {
-	view := CreateSarchResultView("template.html")
+	view := CreateSarchResultView("template.tmpl")
 	out, err := os.Create("template_test.html")
 
 	page := model.SearchResult{}

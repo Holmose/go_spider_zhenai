@@ -1,7 +1,7 @@
 package main
 
 import (
-	"PRO02/crawler/frontend/controller"
+	"PRO02/frontend/controller"
 	"fmt"
 	"log"
 	"net/http"
@@ -9,10 +9,10 @@ import (
 
 func main() {
 	http.Handle("/", http.FileServer(
-		http.Dir("crawler/frontend/view/")))
+		http.Dir("frontend/view/")))
 	http.Handle("/search",
 		controller.CreateSearchResultHandler(
-			"crawler/frontend/view/template.html"))
+			"frontend/view/template.tmpl"))
 	fmt.Println("Frontend Server Listening 8888 ...")
 	err := http.ListenAndServe(":8888", nil)
 

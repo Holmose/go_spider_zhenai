@@ -1,7 +1,7 @@
 package view
 
 import (
-	"PRO02/crawler/frontend/model"
+	"PRO02/frontend/model"
 	"html/template"
 	"io"
 	"strings"

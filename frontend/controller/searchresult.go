@@ -2,8 +2,8 @@ package controller
 
 import (
 	"PRO02/crawler/engine"
-	"PRO02/crawler/frontend/model"
-	"PRO02/crawler/frontend/view"
+	"PRO02/frontend/model"
+	"PRO02/frontend/view"
 	"context"
 	"gopkg.in/olivere/elastic.v5"
 	"log"
