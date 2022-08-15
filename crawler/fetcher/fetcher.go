@@ -1,6 +1,7 @@
 package fetcher
 
 import (
+	"PRO02/crawler_distributed/config"
 	"bufio"
 	"fmt"
 	"golang.org/x/net/html/charset"
@@ -38,11 +39,11 @@ const (
 	userAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/104.0.5112.81 Safari/537.36 Edg/104.0.1293.47"
 )
 
-var rateLimiter = time.Tick(10 * time.Millisecond)
+var rateLimiter = time.Tick(time.Second / config.Qps)
 
 func Fetch(url string) ([]byte, error) {
 	<-rateLimiter
-
+	log.Printf("Fetching url %s", url)
 	client := &http.Client{
 		Timeout: 2 * time.Second,
 	}
